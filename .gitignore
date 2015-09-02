@@ -30,3 +30,8 @@
 
 # Debug files
 *.dSYM/
+
+.settings
+.project
+.cproject
+parse_xml
