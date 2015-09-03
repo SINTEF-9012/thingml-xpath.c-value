@@ -43,6 +43,65 @@ void parse_integer(const char* xml_content, const char* xpath, void* parser_cont
     }
 }
 
+void parse_double(const char* xml_content, const char* xpath, void* parser_context) {
+	xmlChar* xpathExpr = BAD_CAST xpath;
+    xmlXPathContextPtr xpathCtx = NULL;
+    xmlXPathObjectPtr xpathObj = NULL;
+
+    xpathObj = evaluate_expression(&xpathExpr, &xpathCtx, &xpathObj, xml_content, xpath, parser_context);
+
+    if(xpathObj) {
+    	ThingMLXPATHParserCnxt * context = (ThingMLXPATHParserCnxt*) parser_context;
+
+    	context->fn_parse_double_callback(context->thing_instance, xpathObj->floatval);
+
+    	/* Cleanup */
+    	xmlXPathFreeObject(xpathObj);
+    	xmlXPathFreeContext(xpathCtx);
+    }
+}
+
+void parse_string(const char* xml_content, const char* xpath, void* parser_context) {
+	xmlChar* xpathExpr = BAD_CAST xpath;
+    xmlXPathContextPtr xpathCtx = NULL;
+    xmlXPathObjectPtr xpathObj = NULL;
+
+    xpathObj = evaluate_expression(&xpathExpr, &xpathCtx, &xpathObj, xml_content, xpath, parser_context);
+
+    if(xpathObj) {
+    	ThingMLXPATHParserCnxt * context = (ThingMLXPATHParserCnxt*) parser_context;
+
+    	context->fn_parse_string_callback(context->thing_instance, (char *) xpathObj->stringval);
+
+    	/* Cleanup */
+    	xmlXPathFreeObject(xpathObj);
+    	xmlXPathFreeContext(xpathCtx);
+    }
+}
+
+void parse_boolean(const char* xml_content, const char* xpath, void* parser_context) {
+	xmlChar* xpathExpr = BAD_CAST xpath;
+    xmlXPathContextPtr xpathCtx = NULL;
+    xmlXPathObjectPtr xpathObj = NULL;
+
+    xpathObj = evaluate_expression(&xpathExpr, &xpathCtx, &xpathObj, xml_content, xpath, parser_context);
+
+    if(xpathObj) {
+    	ThingMLXPATHParserCnxt * context = (ThingMLXPATHParserCnxt*) parser_context;
+    	if(strcmp((char *) xpathObj->stringval, "true") == 0 || strcmp((char *) xpathObj->stringval, "false") == 0) {
+    		int value = (strcmp((char *) xpathObj->stringval, "true") == 0) ? 1 : 0;
+    		context->fn_parse_boolean_callback(context->thing_instance, value);
+    	} else {
+    		fprintf(stderr,"Error: value is neither false nor true '%s'\n", (char *) xpathObj->stringval);
+    		context->fn_onerror_callback(context->thing_instance);
+    	}
+
+    	/* Cleanup */
+    	xmlXPathFreeObject(xpathObj);
+    	xmlXPathFreeContext(xpathCtx);
+    }
+}
+
 xmlXPathObjectPtr evaluate_expression(xmlChar** xpathExpr,
 		xmlXPathContextPtr* xpathCtx, xmlXPathObjectPtr* xpathObj,
 		const char* xml_content, const char* xpath, void* parser_context) {
