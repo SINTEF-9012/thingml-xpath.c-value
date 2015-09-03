@@ -2,7 +2,7 @@
 
 thingml-xpath.c-value adds xpath evaluation support in ThingML, requires libxml2.
 
-## Installation && Usage
+## Installation & Usage
 ```
 >make && make install
 ```
