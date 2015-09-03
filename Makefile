@@ -10,7 +10,12 @@ LIB = -lxml2 -lm
 DYNAMIC_LIB = libtmlxpathvalue.so
 STATIC_LIB = libtmlxpathvalue.a
 
-INCLUDE_DIR = -I/usr/include/libxml2/
+INSTALL_INCLUDE_DIR = /usr/local/include/
+INSTALL_LIB_DIR = /usr/local/lib/
+
+THINGML_XPATH_DIR = thingmlxpath
+
+XML2_INCLUDE_DIR = -I/usr/include/libxml2/
 
 CROSS_COMPILE :=
 
@@ -20,7 +25,7 @@ GCC = $(CROSS_COMPILE)gcc
 AR = $(CROSS_COMPILE)ar
 
 %.o : %.c
-	$(GCC) $(INCLUDE_DIR) $(GFLAGS) -c -o $@ $<
+	$(GCC) $(XML2_INCLUDE_DIR) $(GFLAGS) -c -o $@ $<
 
 all: static dynamic bin
 
@@ -30,6 +35,18 @@ static : $(OBJ)
 dynamic : $(OBJ)
 	$(GCC) -shared -rdynamic -o $(DYNAMIC_LIB) $(OBJ)
 	
+install:
+	install -d $(INSTALL_INCLUDE_DIR)$(THINGML_XPATH_DIR)
+	install $(DYNAMIC_LIB) $(INSTALL_LIB_DIR)
+	install $(STATIC_LIB) $(INSTALL_LIB_DIR)
+	cp -r ./*.h $(INSTALL_INCLUDE_DIR)$(THINGML_XPATH_DIR)
+	ldconfig
+
+uninstall:
+	rm -rf $(INSTALL_INCLUDE_DIR)$(THINGML_XPATH_DIR)
+	rm -rf $(INSTALL_LIB_DIR)$(DYNAMIC_LIB)
+	rm -rf $(INSTALL_LIB_DIR)$(STATIC_LIB)
+
 bin : example
 
 example : $(EXAMPLE_OBJ)
