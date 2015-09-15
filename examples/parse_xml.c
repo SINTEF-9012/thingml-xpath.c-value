@@ -11,7 +11,7 @@
 #include <stdint.h>
 
 
-#include "../thingml_xpath.c"
+#include "../thingml_xpath.h"
 
 
 void xpath_error_callback(void* _instance, ...) {
@@ -73,11 +73,11 @@ void xpath_boolen_value_callback(void* _instance, ...) {
 
 int main(int argc, char * argv[]) {
 	const char * xml_string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><senml xmlns=\"urn:ietf:params:xml:ns:senml\" bn=\"urn:dev:mac:0024befffe804ff1\" bt=\"0\" ver=\"1\"><e n=\"temp\" u=\"Cel\" v=\"25.000000\" bfalse=\"false\" btrue=\"true\"/></senml>";
-	const char * int_xpath = "number(//*[local-name()='e'][1]/@v)";
-	const char * double_xpath = "number(//*[local-name()='e'][1]/@v)";
-	const char * string_xpath = "string(//*[local-name()='e'][1]/@u)";
-	const char * bool_xpath_false = "string(//*[local-name()='e'][1]/@bfalse)";
-	const char * bool_xpath_true = "string(//*[local-name()='e'][1]/@btrue)";
+	const char * int_xpath = "number(//*[local-name()=\"e\"][1]/@v)";
+	const char * double_xpath = "number(//*[local-name()=\"e\"][1]/@v)";
+	const char * string_xpath = "string(//*[local-name()=\"e\"][1]/@u)";
+	const char * bool_xpath_false = "string(//*[local-name()=\"e\"][1]/@bfalse)";
+	const char * bool_xpath_true = "string(//*[local-name()=\"e\"][1]/@btrue)";
 
 	ThingMLXPATHParserCnxt* context = malloc(sizeof(ThingMLXPATHParserCnxt));
 
